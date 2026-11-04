@@ -41,11 +41,15 @@
 #define SPATIO_TEMPORAL_VOXEL_LAYER__MEASUREMENT_READING_H_
 
 #include <memory>
+#include <vector>
 
 // msgs
 #include "geometry_msgs/msg/point.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
+
+// obstruction polygons
+#include "spatio_temporal_voxel_layer/obstruction_polygons.hpp"
 
 enum ModelType
 {
@@ -69,7 +73,7 @@ struct MeasurementReading
   /*****************************************************************************/
   MeasurementReading(
     geometry_msgs::msg::Point & origin, sensor_msgs::msg::PointCloud2 cloud,
-    double obstacle_range, double min_z, double max_z, double vFOV,
+    double obstacle_range, double min_z, double max_z, double vFOV, double vFOVOffset,
     double vFOVPadding, double hFOV, double decay_acceleration, bool marking,
     bool clearing, ModelType model_type)
   /*****************************************************************************/
@@ -79,6 +83,7 @@ struct MeasurementReading
     _min_z_in_m(min_z),
     _max_z_in_m(max_z),
     _vertical_fov_in_rad(vFOV),
+    _vertical_fov_offset_in_rad(vFOVOffset),
     _vertical_fov_padding_in_m(vFOVPadding),
     _horizontal_fov_in_rad(hFOV),
     _marking(marking),
@@ -106,12 +111,14 @@ struct MeasurementReading
     _min_z_in_m(obs._min_z_in_m),
     _max_z_in_m(obs._max_z_in_m),
     _vertical_fov_in_rad(obs._vertical_fov_in_rad),
+    _vertical_fov_offset_in_rad(obs._vertical_fov_offset_in_rad),
     _vertical_fov_padding_in_m(obs._vertical_fov_padding_in_m),
     _horizontal_fov_in_rad(obs._horizontal_fov_in_rad),
     _marking(obs._marking),
     _clearing(obs._clearing),
     _decay_acceleration(obs._decay_acceleration),
-    _model_type(obs._model_type)
+    _model_type(obs._model_type),
+    _obstruction_filter(obs._obstruction_filter)
   {
   }
 
@@ -119,9 +126,10 @@ struct MeasurementReading
   geometry_msgs::msg::Quaternion _orientation;
   std::shared_ptr < sensor_msgs::msg::PointCloud2 > _cloud;
   double _obstacle_range_in_m, _min_z_in_m, _max_z_in_m;
-  double _vertical_fov_in_rad, _vertical_fov_padding_in_m, _horizontal_fov_in_rad;
+  double _vertical_fov_in_rad, _vertical_fov_offset_in_rad, _vertical_fov_padding_in_m, _horizontal_fov_in_rad;
   double _marking, _clearing, _decay_acceleration;
   ModelType _model_type;
+  std::shared_ptr<geometry::ObstructionFilter> _obstruction_filter;
 };
 
 }  // namespace observation

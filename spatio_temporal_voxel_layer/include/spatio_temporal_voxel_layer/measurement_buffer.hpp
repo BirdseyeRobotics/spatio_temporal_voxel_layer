@@ -99,6 +99,7 @@ public:
     const double & min_d,
     const double & max_d,
     const double & vFOV,
+    const double & vFOVOffset,
     const double & vFOVPadding,
     const double & hFOV,
     const double & decay_acceleration,
@@ -133,9 +134,12 @@ public:
   void SetMaxObstacleHeight(const double & max_obstacle_height);
   void SetMinZ(const double & min_z);
   void SetMaxZ(const double & max_z);
+  void SetVerticalFovOffset(const double & vertical_fov_offset);
   void SetVerticalFovPadding(const double & vertical_fov_padding);
   void SetHorizontalFovAngle(const double & horizontal_fov_angle);
   void SetVerticalFovAngle(const double & vertical_fov_angle);
+  void SetObstructionFilter(
+    std::shared_ptr<geometry::ObstructionFilter> filter);
 
   // State knoweldge if sensors are operating as expected
   bool UpdatedAtExpectedRate(void) const;
@@ -158,13 +162,14 @@ private:
   std::string _global_frame, _sensor_frame, _source_name, _topic_name;
   std::list<observation::MeasurementReading> _observation_list;
   double _min_obstacle_height, _max_obstacle_height, _obstacle_range, _tf_tolerance;
-  double _min_z, _max_z, _vertical_fov, _vertical_fov_padding, _horizontal_fov;
+  double _min_z, _max_z, _vertical_fov, _vertical_fov_offset, _vertical_fov_padding, _horizontal_fov;
   double _decay_acceleration, _voxel_size;
   bool _marking, _clearing;
   Filters _filter;
   int _voxel_min_points;
   bool _clear_buffer_after_reading, _enabled;
   ModelType _model_type;
+  std::shared_ptr<geometry::ObstructionFilter> _obstruction_filter;
   rclcpp::Clock::SharedPtr clock_;
   rclcpp::Logger logger_;
 };
